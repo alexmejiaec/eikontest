@@ -1,0 +1,6 @@
+@EikonApi_HostAddress = http://localhost:5077
+
+GET {{EikonApi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
