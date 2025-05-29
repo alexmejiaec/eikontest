@@ -13,6 +13,9 @@ namespace EikonApi.Controllers
     {
         private readonly EikonApiDbContext _context = context;
 
+        #region Cabecera Factura
+
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -128,6 +131,50 @@ namespace EikonApi.Controllers
             return fc;
 
         }
+
+        #endregion
+
+        #region Detalle Factura
+
+        [HttpGet("Detalle/{id}")]
+        public async Task<IActionResult> GetDetallebyId(int id)
+        {
+            //El id siempre es necesario
+            if (id == 0)
+            {
+                return BadRequest(new Response<FacturaDetalle>
+                {
+                    IsSuccess = false,
+                    Result = null,
+                    Message = "El id es necesario"
+                });
+            }
+            var fc = await GetFacturaDet(id);
+            if (fc != null)
+            {
+                return Ok(new Response<List<FacturaDetalle>>
+                {
+                    IsSuccess = true,
+                    Result = fc,
+                    Message = "Factura obtenida correctamente"
+                });
+            }
+
+            return NotFound(new Response<Factura>
+            {
+                IsSuccess = false,
+                Result = null,
+                Message = "No hay coincidencias"
+            });
+        }
+        private async Task<List<FacturaDetalle>> GetFacturaDet(int id)
+        {
+            var fc = await _context.FacturaDetalles.Where(x => x.IdCab == id).ToListAsync();
+            return fc;
+
+        }
+        #endregion
+
     }
 
 }
